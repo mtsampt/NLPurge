@@ -9,7 +9,8 @@ const CATEGORIES = {
     PROMOTIONAL: 'promotional',
     LEGITIMATE: 'legitimate',
     NOTIFICATION: 'notification',
-    RECEIPT: 'receipt'
+    RECEIPT: 'receipt',
+    NEWSLETTER: 'newsletter'
 };
 
 // State persistence functions
@@ -38,6 +39,11 @@ function loadState() {
                 updateStats();
                 updateProgress();
                 
+                // Enable export button if we have classified emails
+                if (classifiedEmails.length > 0) {
+                    document.getElementById('exportBtn').disabled = false;
+                }
+                
                 // Display current email if we have emails
                 if (allEmails.length > 0 && currentEmailIndex < allEmails.length) {
                     displayEmail(currentEmailIndex);
@@ -55,6 +61,15 @@ function loadState() {
 
 function clearState() {
     localStorage.removeItem('emailSorterState');
+}
+
+// Shuffle emails array using Fisher-Yates algorithm
+function shuffleEmails() {
+    for (let i = allEmails.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [allEmails[i], allEmails[j]] = [allEmails[j], allEmails[i]];
+    }
+    console.log('Emails shuffled!');
 }
 
 function confirmClearSession() {
@@ -101,8 +116,8 @@ function loadEmails(category) {
             // Show success message
             showMessage(`Loaded ${emails.length} emails from ${category} folder`, 'success');
             
-            // Enable export button if we have emails
-            if (allEmails.length > 0) {
+            // Enable export button if we have classified emails
+            if (classifiedEmails.length > 0) {
                 document.getElementById('exportBtn').disabled = false;
             }
             
@@ -163,11 +178,12 @@ function loadAllEmails() {
         console.log(`File loaded. Files loaded: ${filesLoaded}/${filesToLoad}, Emails in this file: ${emailsLoaded}, Total emails: ${totalEmailsLoaded}, allEmails array length: ${allEmails.length}`);
         
         if (filesLoaded === filesToLoad) {
-            // All files loaded, show first email
+            // All files loaded, shuffle emails and show first email
             console.log(`All files loaded! Final count - allEmails array: ${allEmails.length}, totalEmailsLoaded: ${totalEmailsLoaded}`);
             if (allEmails.length > 0) {
+                shuffleEmails();
                 displayEmail(0);
-                showMessage(`Loaded ${totalEmailsLoaded} total emails from ${filesToLoad} files`, 'success');
+                showMessage(`Loaded and randomized ${totalEmailsLoaded} total emails from ${filesToLoad} files`, 'success');
             }
         }
     }
@@ -250,8 +266,8 @@ function loadEmailsWithCallback(category, callback) {
             // Show success message
             showMessage(`Loaded ${emails.length} emails from ${displayCategory} folder`, 'success');
             
-            // Enable export button if we have emails
-            if (allEmails.length > 0) {
+            // Enable export button if we have classified emails
+            if (classifiedEmails.length > 0) {
                 document.getElementById('exportBtn').disabled = false;
             }
             
@@ -458,8 +474,9 @@ function updateStats() {
     const legitimate = classifiedEmails.filter(e => e.userClassification === 'legitimate').length;
     const notification = classifiedEmails.filter(e => e.userClassification === 'notification').length;
     const receipt = classifiedEmails.filter(e => e.userClassification === 'receipt').length;
+    const newsletter = classifiedEmails.filter(e => e.userClassification === 'newsletter').length;
     
-    console.log(`updateStats called - Total emails: ${total}, Spam: ${spam}, Promo: ${promo}, Legitimate: ${legitimate}, Notification: ${notification}, Receipt: ${receipt}`);
+    console.log(`updateStats called - Total emails: ${total}, Spam: ${spam}, Promo: ${promo}, Legitimate: ${legitimate}, Notification: ${notification}, Receipt: ${receipt}, Newsletter: ${newsletter}`);
     
     document.getElementById('totalEmails').textContent = total;
     document.getElementById('spamCount').textContent = spam;
@@ -467,6 +484,7 @@ function updateStats() {
     document.getElementById('legitimateCount').textContent = legitimate;
     document.getElementById('notificationCount').textContent = notification;
     document.getElementById('receiptCount').textContent = receipt;
+    document.getElementById('newsletterCount').textContent = newsletter;
 }
 
 // Update progress bar
@@ -604,6 +622,27 @@ document.addEventListener('keydown', function(e) {
                 classifyEmail('legitimate');
             }
             break;
+        case '4':
+        case 'n':
+        case 'N':
+            if (currentEmailIndex < allEmails.length) {
+                classifyEmail('notification');
+            }
+            break;
+        case '5':
+        case 'r':
+        case 'R':
+            if (currentEmailIndex < allEmails.length) {
+                classifyEmail('receipt');
+            }
+            break;
+        case '6':
+        case 'w':
+        case 'W':
+            if (currentEmailIndex < allEmails.length) {
+                classifyEmail('newsletter');
+            }
+            break;
         case 'ArrowRight':
         case ' ':
             if (currentEmailIndex < allEmails.length) {
@@ -620,6 +659,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div style="position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.8); color: white; padding: 15px; border-radius: 10px; font-size: 0.9rem; z-index: 1000;">
             <strong>Keyboard Shortcuts:</strong><br>
             1/S - Spam | 2/P - Promotional | 3/L - Legitimate<br>
+            4/N - Notification | 5/R - Receipt | 6/W - Newsletter<br>
             Space/→ - Mark as Legitimate
         </div>
     `;

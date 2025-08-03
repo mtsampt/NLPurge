@@ -11,13 +11,17 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-envelope"></i> Email Sorter</h1>
-            <p>Sort your emails for NLP training - Spam, Promotional, or Legitimate</p>
+            <p>Sort your emails for NLP training - Legitimate, Spam, Promotional, Notification, Receipt, or Newsletter</p>
         </header>
 
         <div class="stats-bar">
             <div class="stat">
                 <span class="stat-number" id="totalEmails">0</span>
                 <span class="stat-label">Total Emails</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="legitimateCount">0</span>
+                <span class="stat-label">Legitimate</span>
             </div>
             <div class="stat">
                 <span class="stat-number" id="spamCount">0</span>
@@ -28,16 +32,16 @@
                 <span class="stat-label">Promotional</span>
             </div>
             <div class="stat">
-                <span class="stat-number" id="legitimateCount">0</span>
-                <span class="stat-label">Legitimate</span>
-            </div>
-            <div class="stat">
                 <span class="stat-number" id="notificationCount">0</span>
                 <span class="stat-label">Notification</span>
             </div>
             <div class="stat">
                 <span class="stat-number" id="receiptCount">0</span>
                 <span class="stat-label">Receipt</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="newsletterCount">0</span>
+                <span class="stat-label">Newsletter</span>
             </div>
         </div>
 
@@ -65,20 +69,23 @@
                         <p id="emailDate"></p>
                     </div>
                     <div class="email-actions">
+                        <button class="btn-legitimate" onclick="classifyEmail('legitimate')">
+                            <i class="fas fa-check"></i> Legitimate
+                        </button>
                         <button class="btn-spam" onclick="classifyEmail('spam')">
                             <i class="fas fa-ban"></i> Spam
                         </button>
                         <button class="btn-promo" onclick="classifyEmail('promotional')">
                             <i class="fas fa-tag"></i> Promotional
                         </button>
-                        <button class="btn-legitimate" onclick="classifyEmail('legitimate')">
-                            <i class="fas fa-check"></i> Legitimate
-                        </button>
                         <button class="btn-notification" onclick="classifyEmail('notification')">
                             <i class="fas fa-bell"></i> Notification
                         </button>
                         <button class="btn-receipt" onclick="classifyEmail('receipt')">
                             <i class="fas fa-receipt"></i> Receipt
+                        </button>
+                        <button class="btn-newsletter" onclick="classifyEmail('newsletter')">
+                            <i class="fas fa-newspaper"></i> Newsletter
                         </button>
                     </div>
                 </div>
@@ -110,9 +117,6 @@
                 </button>
                 <button class="btn-secondary" onclick="exportCSV()" id="exportBtn" disabled>
                     <i class="fas fa-download"></i> Export Training Data
-                </button>
-                <button class="btn-secondary" onclick="resetData()">
-                    <i class="fas fa-redo"></i> Reset
                 </button>
                 <button class="btn-secondary" onclick="confirmClearSession()">
                     <i class="fas fa-trash"></i> Clear Session

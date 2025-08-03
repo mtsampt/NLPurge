@@ -36,8 +36,8 @@ header p {
 
 .stats-bar {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 15px;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
     margin-bottom: 30px;
 }
 
@@ -129,14 +129,22 @@ header p {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    flex-wrap: wrap;
     gap: 20px;
+}
+
+.email-info {
+    flex: 1;
+    min-width: 0;
+    max-width: 60%;
 }
 
 .email-info h3 {
     font-size: 1.4rem;
     margin-bottom: 8px;
     font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .email-info p {
@@ -150,6 +158,8 @@ header p {
     gap: 8px;
     flex-wrap: nowrap;
     justify-content: space-between;
+    flex-shrink: 0;
+    min-width: 0;
 }
 
 .email-actions button {
@@ -220,6 +230,17 @@ header p {
     background: #ff4757;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 99, 72, 0.4);
+}
+
+.btn-newsletter {
+    background: #8e44ad;
+    color: white;
+}
+
+.btn-newsletter:hover {
+    background: #7d3c98;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
 }
 
 .email-content {
@@ -370,6 +391,16 @@ header p {
     .email-header {
         flex-direction: column;
         align-items: stretch;
+    }
+    
+    .email-info {
+        max-width: 100%;
+    }
+    
+    .email-info h3 {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
     }
     
     .email-actions {
