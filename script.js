@@ -10,10 +10,68 @@ const CATEGORIES = {
     LEGITIMATE: 'legitimate'
 };
 
+// State persistence functions
+function saveState() {
+    const state = {
+        allEmails: allEmails,
+        currentEmailIndex: currentEmailIndex,
+        classifiedEmails: classifiedEmails,
+        timestamp: Date.now()
+    };
+    localStorage.setItem('emailSorterState', JSON.stringify(state));
+}
+
+function loadState() {
+    const savedState = localStorage.getItem('emailSorterState');
+    if (savedState) {
+        try {
+            const state = JSON.parse(savedState);
+            
+            if (state.allEmails && state.allEmails.length > 0) {
+                allEmails = state.allEmails;
+                currentEmailIndex = state.currentEmailIndex;
+                classifiedEmails = state.classifiedEmails;
+                
+                // Update UI
+                updateStats();
+                updateProgress();
+                
+                // Display current email if we have emails
+                if (allEmails.length > 0 && currentEmailIndex < allEmails.length) {
+                    displayEmail(currentEmailIndex);
+                    showMessage(`Restored session with ${allEmails.length} emails and ${classifiedEmails.length} classifications`, 'success');
+                }
+                
+                return true;
+            }
+        } catch (error) {
+            console.error('Error loading state:', error);
+        }
+    }
+    return false;
+}
+
+function clearState() {
+    localStorage.removeItem('emailSorterState');
+}
+
+function confirmClearSession() {
+    const confirmed = confirm('Are you sure you want to clear your session? This will remove all saved progress and you\'ll need to reload your emails.');
+    if (confirmed) {
+        clearState();
+        showMessage('Session cleared. Refresh to start fresh.', 'info');
+    }
+}
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    updateStats();
-    updateProgress();
+    // Try to load saved state
+    const stateLoaded = loadState();
+    
+    if (!stateLoaded) {
+        updateStats();
+        updateProgress();
+    }
 });
 
 // Load emails from CSV files
@@ -80,6 +138,9 @@ function loadAllEmails() {
     allEmails = [];
     classifiedEmails = [];
     currentEmailIndex = 0;
+    
+    // Clear saved state when starting fresh
+    clearState();
     
     let filesToLoad = 0;
     let filesLoaded = 0;
@@ -180,6 +241,9 @@ function loadEmailsWithCallback(category, callback) {
             
             updateStats();
             updateProgress();
+            
+            // Save state after loading emails
+            saveState();
             
             // Show success message
             showMessage(`Loaded ${emails.length} emails from ${displayCategory} folder`, 'success');
@@ -323,6 +387,9 @@ function classifyEmail(category) {
     displayEmail(currentEmailIndex);
     updateStats();
     
+    // Save state after classification
+    saveState();
+    
     // Show classification feedback
     const categoryNames = {
         'spam': 'Spam',
@@ -413,6 +480,9 @@ function resetData() {
     allEmails = [];
     classifiedEmails = [];
     currentEmailIndex = 0;
+    
+    // Clear saved state
+    clearState();
     
     // Clear file inputs
     document.getElementById('spamFile').value = '';
