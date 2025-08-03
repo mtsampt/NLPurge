@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Sorter - NLP Training Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-envelope"></i> Email Sorter</h1>
+            <p>Sort your emails for NLP training - Spam, Promotional, or Legitimate</p>
+        </header>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-number" id="totalEmails">0</span>
+                <span class="stat-label">Total Emails</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="spamCount">0</span>
+                <span class="stat-label">Spam</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="promoCount">0</span>
+                <span class="stat-label">Promotional</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="legitimateCount">0</span>
+                <span class="stat-label">Legitimate</span>
+            </div>
+        </div>
+
+        <div class="email-container">
+            <div class="email-card" id="currentEmail">
+                <div class="email-header">
+                    <div class="email-info">
+                        <h3 id="emailSubject">No emails loaded</h3>
+                        <p id="emailSender">Click "Load Emails" to start</p>
+                        <p id="emailDate"></p>
+                    </div>
+                    <div class="email-actions">
+                        <button class="btn-spam" onclick="classifyEmail('spam')">
+                            <i class="fas fa-ban"></i> Spam
+                        </button>
+                        <button class="btn-promo" onclick="classifyEmail('promotional')">
+                            <i class="fas fa-tag"></i> Promotional
+                        </button>
+                        <button class="btn-legitimate" onclick="classifyEmail('legitimate')">
+                            <i class="fas fa-check"></i> Legitimate
+                        </button>
+                    </div>
+                </div>
+                <div class="email-content">
+                    <div id="emailBody">Load your emails to start sorting...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="file-inputs">
+                <div class="input-group">
+                    <label for="spamFile">Spam Folder CSV:</label>
+                    <input type="file" id="spamFile" accept=".csv">
+                </div>
+                <div class="input-group">
+                    <label for="promoFile">Promotions Folder CSV (300 most recent):</label>
+                    <input type="file" id="promoFile" accept=".csv">
+                </div>
+                <div class="input-group">
+                    <label for="inboxFile">Inbox CSV (500 most recent):</label>
+                    <input type="file" id="inboxFile" accept=".csv">
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn-primary" onclick="loadAllEmails()">
+                    <i class="fas fa-upload"></i> Load All Emails
+                </button>
+                <button class="btn-secondary" onclick="exportCSV()" id="exportBtn" disabled>
+                    <i class="fas fa-download"></i> Export Training Data
+                </button>
+                <button class="btn-secondary" onclick="resetData()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="progressText">Ready to start sorting</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
