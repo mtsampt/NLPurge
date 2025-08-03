@@ -7,7 +7,9 @@ let classifiedEmails = [];
 const CATEGORIES = {
     SPAM: 'spam',
     PROMOTIONAL: 'promotional',
-    LEGITIMATE: 'legitimate'
+    LEGITIMATE: 'legitimate',
+    NOTIFICATION: 'notification',
+    RECEIPT: 'receipt'
 };
 
 // State persistence functions
@@ -454,13 +456,17 @@ function updateStats() {
     const spam = classifiedEmails.filter(e => e.userClassification === 'spam').length;
     const promo = classifiedEmails.filter(e => e.userClassification === 'promotional').length;
     const legitimate = classifiedEmails.filter(e => e.userClassification === 'legitimate').length;
+    const notification = classifiedEmails.filter(e => e.userClassification === 'notification').length;
+    const receipt = classifiedEmails.filter(e => e.userClassification === 'receipt').length;
     
-    console.log(`updateStats called - Total emails: ${total}, Spam: ${spam}, Promo: ${promo}, Legitimate: ${legitimate}`);
+    console.log(`updateStats called - Total emails: ${total}, Spam: ${spam}, Promo: ${promo}, Legitimate: ${legitimate}, Notification: ${notification}, Receipt: ${receipt}`);
     
     document.getElementById('totalEmails').textContent = total;
     document.getElementById('spamCount').textContent = spam;
     document.getElementById('promoCount').textContent = promo;
     document.getElementById('legitimateCount').textContent = legitimate;
+    document.getElementById('notificationCount').textContent = notification;
+    document.getElementById('receiptCount').textContent = receipt;
 }
 
 // Update progress bar

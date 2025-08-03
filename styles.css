@@ -36,15 +36,15 @@ header p {
 
 .stats-bar {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
     margin-bottom: 30px;
 }
 
 .stat {
     background: rgba(255, 255, 255, 0.95);
-    padding: 20px;
-    border-radius: 15px;
+    padding: 15px 10px;
+    border-radius: 12px;
     text-align: center;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     backdrop-filter: blur(10px);
@@ -53,17 +53,17 @@ header p {
 
 .stat-number {
     display: block;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: bold;
     color: #667eea;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
 }
 
 .stat-label {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     color: #666;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 .email-summary {
@@ -147,21 +147,24 @@ header p {
 
 .email-actions {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
 }
 
 .email-actions button {
-    padding: 12px 20px;
+    padding: 10px 16px;
     border: none;
-    border-radius: 25px;
+    border-radius: 20px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
 }
 
 .btn-spam {
@@ -195,6 +198,28 @@ header p {
     background: #26d0ce;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(46, 213, 115, 0.4);
+}
+
+.btn-notification {
+    background: #3742fa;
+    color: white;
+}
+
+.btn-notification:hover {
+    background: #2f3542;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(55, 66, 250, 0.4);
+}
+
+.btn-receipt {
+    background: #ff6348;
+    color: white;
+}
+
+.btn-receipt:hover {
+    background: #ff4757;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 99, 72, 0.4);
 }
 
 .email-content {
@@ -348,7 +373,16 @@ header p {
     }
     
     .email-actions {
+        flex-wrap: wrap;
         justify-content: center;
+        gap: 8px;
+    }
+    
+    .email-actions button {
+        flex: none;
+        min-width: auto;
+        padding: 12px 18px;
+        font-size: 0.9rem;
     }
     
     .action-buttons {
@@ -357,6 +391,23 @@ header p {
     
     .file-inputs {
         grid-template-columns: 1fr;
+    }
+    
+    .stats-bar {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .stat {
+        padding: 12px 8px;
+    }
+    
+    .stat-number {
+        font-size: 1.3rem;
+    }
+    
+    .stat-label {
+        font-size: 0.7rem;
     }
 }
 

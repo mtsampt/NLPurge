@@ -31,6 +31,14 @@
                 <span class="stat-number" id="legitimateCount">0</span>
                 <span class="stat-label">Legitimate</span>
             </div>
+            <div class="stat">
+                <span class="stat-number" id="notificationCount">0</span>
+                <span class="stat-label">Notification</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" id="receiptCount">0</span>
+                <span class="stat-label">Receipt</span>
+            </div>
         </div>
 
         <div class="email-summary">
@@ -65,6 +73,12 @@
                         </button>
                         <button class="btn-legitimate" onclick="classifyEmail('legitimate')">
                             <i class="fas fa-check"></i> Legitimate
+                        </button>
+                        <button class="btn-notification" onclick="classifyEmail('notification')">
+                            <i class="fas fa-bell"></i> Notification
+                        </button>
+                        <button class="btn-receipt" onclick="classifyEmail('receipt')">
+                            <i class="fas fa-receipt"></i> Receipt
                         </button>
                     </div>
                 </div>
