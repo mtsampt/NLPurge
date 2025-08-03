@@ -66,6 +66,13 @@ def clean_text(text):
     text = re.sub(r'\r\n', '\n', text)
     text = re.sub(r'\r', '\n', text)
     text = re.sub(r'\n+', '\n', text)
+    
+    # Remove non-printable characters except newlines and tabs
+    text = re.sub(r'[^\x20-\x7E\n\t]', '', text)
+    
+    # Clean up multiple spaces
+    text = re.sub(r' +', ' ', text)
+    
     text = text.strip()
     
     return text
@@ -131,7 +138,7 @@ def search_emails(service, query, max_results=100):
         return []
 
 def export_folder_emails(service, folder_name, query, max_results, output_file):
-    """Export emails from a specific folder with clear separators."""
+    """Export emails from a specific folder."""
     print(f"Exporting {max_results} emails from {folder_name}...")
     
     messages = search_emails(service, query, max_results)
@@ -147,27 +154,20 @@ def export_folder_emails(service, folder_name, query, max_results, output_file):
         if email_data:
             emails.append(email_data)
     
-    # Save to CSV with clear separators
+    # Save to CSV with simple format
     with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
         fieldnames = ['subject', 'sender', 'body', 'date']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
         
         writer.writeheader()
         
-        for i, email in enumerate(emails):
-            # Add separator comment for easy parsing
-            csvfile.write(f"# {EMAIL_SEPARATOR} Email {i+1}\n")
-            
-            # Write email data with proper escaping
+        for email in emails:
             writer.writerow({
                 'subject': email['subject'],
                 'sender': email['sender'],
                 'body': email['body'],
                 'date': email['date']
             })
-            
-            # Add end separator
-            csvfile.write(f"# {EMAIL_END_SEPARATOR}\n")
     
     print(f"Exported {len(emails)} emails to {output_file}")
 

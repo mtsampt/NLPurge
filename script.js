@@ -266,52 +266,49 @@ function loadEmailsWithCallback(category, callback) {
     reader.readAsText(file);
 }
 
-// Parse CSV data with email separators
+// Parse CSV data
 function parseCSV(csvData, category) {
     const lines = csvData.split('\n');
     
     const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
     
     const emails = [];
-    let currentEmail = null;
-    let inEmail = false;
     
     for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
         
-        // Check for email separators
-        if (line.includes('===EMAIL_START===')) {
-            inEmail = true;
-            currentEmail = {};
-            continue;
-        }
+        const values = parseCSVLine(line);
         
-        if (line.includes('===EMAIL_END===')) {
-            if (currentEmail && inEmail) {
-                // Add category and classification
-                currentEmail.originalCategory = category;
-                currentEmail.userClassification = null;
-                emails.push(currentEmail);
-            }
-            inEmail = false;
-            currentEmail = null;
-            continue;
-        }
-        
-        // Skip comment lines
-        if (line.startsWith('#')) continue;
-        
-        // Parse CSV line if we're in an email
-        if (inEmail && currentEmail) {
-            const values = parseCSVLine(line);
+        if (values.length >= headers.length) {
+            let subject = values[headers.indexOf('subject')] || values[headers.indexOf('Subject')] || '';
+            let sender = values[headers.indexOf('sender')] || values[headers.indexOf('Sender')] || values[headers.indexOf('from')] || values[headers.indexOf('From')] || '';
+            let body = values[headers.indexOf('body')] || values[headers.indexOf('Body')] || values[headers.indexOf('content')] || values[headers.indexOf('Content')] || '';
+            let date = values[headers.indexOf('date')] || values[headers.indexOf('Date')] || '';
             
-            if (values.length >= headers.length) {
-                currentEmail.subject = values[headers.indexOf('subject')] || values[headers.indexOf('Subject')] || '';
-                currentEmail.sender = values[headers.indexOf('sender')] || values[headers.indexOf('Sender')] || values[headers.indexOf('from')] || values[headers.indexOf('From')] || '';
-                currentEmail.body = values[headers.indexOf('body')] || values[headers.indexOf('Body')] || values[headers.indexOf('content')] || values[headers.indexOf('Content')] || '';
-                currentEmail.date = values[headers.indexOf('date')] || values[headers.indexOf('Date')] || '';
+            // Clean up data
+            subject = subject.replace(/[^\x20-\x7E]/g, '').trim(); // Remove non-printable characters
+            sender = sender.replace(/[^\x20-\x7E]/g, '').trim(); // Remove non-printable characters
+            
+            // If sender looks like an address instead of email, try to extract email
+            if (sender && !sender.includes('@') && sender.includes(' ')) {
+                // Try to find email pattern in the sender
+                const emailMatch = sender.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+                if (emailMatch) {
+                    sender = emailMatch[0];
+                }
             }
+            
+            const email = {
+                subject: subject,
+                sender: sender,
+                body: body,
+                date: date,
+                originalCategory: category,
+                userClassification: null
+            };
+            
+            emails.push(email);
         }
     }
     
@@ -348,6 +345,10 @@ function displayEmail(index) {
         document.getElementById('emailSender').textContent = '';
         document.getElementById('emailDate').textContent = '';
         document.getElementById('emailBody').textContent = 'All emails have been classified!';
+        
+        // Update summary boxes
+        document.getElementById('summarySubject').textContent = 'No more emails to classify';
+        document.getElementById('summarySender').textContent = '';
         return;
     }
     
@@ -357,6 +358,10 @@ function displayEmail(index) {
     document.getElementById('emailSender').textContent = email.sender || 'Unknown Sender';
     document.getElementById('emailDate').textContent = email.date || '';
     document.getElementById('emailBody').textContent = email.body || 'No content available';
+    
+    // Update summary boxes
+    document.getElementById('summarySubject').textContent = email.subject || 'No Subject';
+    document.getElementById('summarySender').textContent = email.sender || 'Unknown Sender';
     
     currentEmailIndex = index;
     updateProgress();
@@ -494,6 +499,10 @@ function resetData() {
     document.getElementById('emailSender').textContent = 'Click "Load Emails" to start';
     document.getElementById('emailDate').textContent = '';
     document.getElementById('emailBody').textContent = 'Load your emails to start sorting...';
+    
+    // Reset summary boxes
+    document.getElementById('summarySubject').textContent = 'No emails loaded';
+    document.getElementById('summarySender').textContent = 'Click "Load Emails" to start';
     
     // Disable export button
     document.getElementById('exportBtn').disabled = true;
